@@ -1,12 +1,14 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.data.ProductDataAccess;
+import ru.akirakozov.sd.refactoring.html.HtmlBuilder;
 import ru.akirakozov.sd.refactoring.model.Product;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,33 +20,21 @@ public class QueryServlet extends HttpServlet {
         String command = request.getParameter("command");
 
         if ("max".equals(command)) {
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("<h1>Product with max price: </h1>");
             Optional<Product> productWithMaxPriceOptional = ProductDataAccess.getProductWithMaxPrice();
-            if (productWithMaxPriceOptional.isPresent()) {
-                Product productWithMaxPrice = productWithMaxPriceOptional.get();
-                response.getWriter().println(productWithMaxPrice.getName() + "\t" + productWithMaxPrice.getPrice() + "</br>");
-            }
-            response.getWriter().println("</body></html>");
+            response.getWriter().println(HtmlBuilder.contentWithHeader(
+                    "Product with max price: ",
+                    productWithMaxPriceOptional.isPresent() ? HtmlBuilder.productList(List.of(productWithMaxPriceOptional.get())) : ""
+            ));
         } else if ("min".equals(command)) {
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("<h1>Product with min price: </h1>");
             Optional<Product> productWithMinPriceOptional = ProductDataAccess.getProductWithMinPrice();
-            if (productWithMinPriceOptional.isPresent()) {
-                Product productWithMinPrice = productWithMinPriceOptional.get();
-                response.getWriter().println(productWithMinPrice.getName() + "\t" + productWithMinPrice.getPrice() + "</br>");
-            }
-            response.getWriter().println("</body></html>");
+            response.getWriter().println(HtmlBuilder.contentWithHeader(
+                    "Product with min price: ",
+                    productWithMinPriceOptional.isPresent() ? HtmlBuilder.productList(List.of(productWithMinPriceOptional.get())) : ""
+            ));
         } else if ("sum".equals(command)) {
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("Summary price: ");
-            response.getWriter().println(ProductDataAccess.getPriceSum());
-            response.getWriter().println("</body></html>");
+            response.getWriter().println(HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum()));
         } else if ("count".equals(command)) {
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("Number of products: ");
-            response.getWriter().println(ProductDataAccess.getProductsCount());
-            response.getWriter().println("</body></html>");
+            response.getWriter().println(HtmlBuilder.contentPage("Number of products: \n" + ProductDataAccess.getProductsCount()));
         } else {
             response.getWriter().println("Unknown command: " + command);
         }
