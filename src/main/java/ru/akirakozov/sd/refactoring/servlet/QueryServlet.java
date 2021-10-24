@@ -26,16 +26,12 @@ public class QueryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
-        if ("max".equals(command)) {
-            writeOptionalProductWithHeader("Product with max price: ", response, ProductDataAccess.getProductWithMaxPrice());
-        } else if ("min".equals(command)) {
-            writeOptionalProductWithHeader("Product with min price: ", response, ProductDataAccess.getProductWithMinPrice());
-        } else if ("sum".equals(command)) {
-            response.getWriter().println(HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum()));
-        } else if ("count".equals(command)) {
-            response.getWriter().println(HtmlBuilder.contentPage("Number of products: \n" + ProductDataAccess.getProductsCount()));
-        } else {
-            response.getWriter().println("Unknown command: " + command);
+        switch (command) {
+            case "max" -> writeOptionalProductWithHeader("Product with max price: ", response, ProductDataAccess.getProductWithMaxPrice());
+            case "min" -> writeOptionalProductWithHeader("Product with min price: ", response, ProductDataAccess.getProductWithMinPrice());
+            case "sum" -> response.getWriter().println(HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum()));
+            case "count" -> response.getWriter().println(HtmlBuilder.contentPage("Number of products: \n" + ProductDataAccess.getProductsCount()));
+            default -> response.getWriter().println("Unknown command: " + command);
         }
 
         response.setContentType("text/html");
