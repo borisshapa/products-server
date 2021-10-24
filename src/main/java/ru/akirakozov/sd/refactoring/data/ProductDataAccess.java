@@ -52,7 +52,7 @@ public class ProductDataAccess {
     }
 
     public static boolean addProduct(Product product) {
-        return executeUpdate("INSERT INTO PRODUCT (NAME, PRICE) VALUES (\"" + product.getName() + "\", " + product.getPrice() + ")");
+        return executeUpdate("INSERT INTO PRODUCT (NAME, PRICE) VALUES (\"" + product.name() + "\", " + product.price() + ")");
     }
 
     public static List<Product> getProducts() {

@@ -19,7 +19,7 @@ public class HtmlBuilder {
     }
 
     public static String product(Product product) {
-        return String.format("%s\t%s</br>", product.getName(), product.getPrice());
+        return String.format("%s\t%s</br>", product.name(), product.price());
     }
 
     public static String productList(List<Product> products) {
