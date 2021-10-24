@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.akirakozov.sd.refactoring.config.Config.DB_URL;
+
 public class ProductDataAccess {
-    public static final String DB_URL = "jdbc:sqlite:test.db";
     private static final String CONNECTION_ERROR_PREFIX = "Сould not establish a connection to the database: ";
 
     private static boolean executeUpdate(String sqlQuery) {

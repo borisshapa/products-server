@@ -10,9 +10,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ProductsTest {
-    private final static String DB_URL = "jdbc:sqlite:test.db";
+import static ru.akirakozov.sd.refactoring.config.Config.DB_URL;
 
+public class ProductsTest {
     protected static void executeSqlQuery(String sql) throws SQLException {
         try (Connection c = DriverManager.getConnection(DB_URL)) {
             Statement stmt = c.createStatement();

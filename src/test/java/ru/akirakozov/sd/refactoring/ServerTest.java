@@ -19,9 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.akirakozov.sd.refactoring.config.Config.PORT;
 
 public class ServerTest extends ProductsTest {
-    private final static int PORT = 8081;
     private final static String ADD_PRODUCT_METHOD = "add-product";
     private final static String GET_PRODUCTS_METHOD = "get-products";
     private final static String QUERY_METHOD = "query";
