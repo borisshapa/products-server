@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class GetProductsServletTest extends ServletTest {
     @Test
-    public void addProductSuccessfully() throws IOException {
+    public void getProductsSuccessfully() throws IOException {
         new GetProductsServlet().doGet(request, response);
         compareWithResponse(
                 """

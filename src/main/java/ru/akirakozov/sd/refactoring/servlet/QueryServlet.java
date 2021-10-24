@@ -15,22 +15,21 @@ import java.util.Optional;
  * @author akirakozov
  */
 public class QueryServlet extends HttpServlet {
+    private static void writeOptionalProductWithHeader(String header, HttpServletResponse response, Optional<Product> product) throws IOException {
+        response.getWriter().println(HtmlBuilder.contentWithHeader(
+                header,
+                product.isPresent() ? HtmlBuilder.product(product.get()) : ""
+        ));
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
         if ("max".equals(command)) {
-            Optional<Product> productWithMaxPriceOptional = ProductDataAccess.getProductWithMaxPrice();
-            response.getWriter().println(HtmlBuilder.contentWithHeader(
-                    "Product with max price: ",
-                    productWithMaxPriceOptional.isPresent() ? HtmlBuilder.productList(List.of(productWithMaxPriceOptional.get())) : ""
-            ));
+            writeOptionalProductWithHeader("Product with max price: ", response, ProductDataAccess.getProductWithMaxPrice());
         } else if ("min".equals(command)) {
-            Optional<Product> productWithMinPriceOptional = ProductDataAccess.getProductWithMinPrice();
-            response.getWriter().println(HtmlBuilder.contentWithHeader(
-                    "Product with min price: ",
-                    productWithMinPriceOptional.isPresent() ? HtmlBuilder.productList(List.of(productWithMinPriceOptional.get())) : ""
-            ));
+            writeOptionalProductWithHeader("Product with min price: ", response, ProductDataAccess.getProductWithMinPrice());
         } else if ("sum".equals(command)) {
             response.getWriter().println(HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum()));
         } else if ("count".equals(command)) {

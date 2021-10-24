@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.data.ProductDataAccess;
+import ru.akirakozov.sd.refactoring.html.HtmlBuilder;
 import ru.akirakozov.sd.refactoring.model.Product;
 
 import javax.servlet.http.HttpServlet;
@@ -22,12 +23,7 @@ public class GetProductsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         List<Product> products = ProductDataAccess.getProducts();
 
-        response.getWriter().println("<html><body>");
-        for (Product product : products) {
-            response.getWriter().println(product.getName() + "\t" + product.getPrice() + "</br>");
-        }
-        response.getWriter().println("</body></html>");
-
+        response.getWriter().println(HtmlBuilder.contentPage(HtmlBuilder.productList(products)));
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
     }
