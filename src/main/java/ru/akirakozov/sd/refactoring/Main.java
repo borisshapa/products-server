@@ -27,14 +27,7 @@ public class Main {
         "/query", new QueryServlet()
     );
 
-    public static void main(String[] args) throws Exception {
-        ProductDataAccess.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                        "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                        " NAME           TEXT    NOT NULL, " +
-                        " PRICE          INT     NOT NULL)"
-        );
-
+    public static Server startServer() throws Exception {
         Server server = new Server(PORT);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -43,6 +36,18 @@ public class Main {
 
         pathToServlet.forEach((String path, AbstractServlet servlet) -> context.addServlet(new ServletHolder(servlet), path));
         server.start();
+        return server;
+    }
+
+    public static void main(String[] args) throws Exception {
+        ProductDataAccess.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS PRODUCT" +
+                        "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        " NAME           TEXT    NOT NULL, " +
+                        " PRICE          INT     NOT NULL)"
+        );
+
+        Server server = startServer();
         server.join();
     }
 }

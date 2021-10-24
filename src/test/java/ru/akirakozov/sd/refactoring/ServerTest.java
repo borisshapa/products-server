@@ -1,13 +1,7 @@
 package ru.akirakozov.sd.refactoring;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
-import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
-import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,20 +20,11 @@ public class ServerTest extends ProductsTest {
     private final static String GET_PRODUCTS_METHOD = "get-products";
     private final static String QUERY_METHOD = "query";
 
-    private final static Server server = new Server(PORT);
     private final static HttpClient client = HttpClient.newHttpClient();
 
     @BeforeAll
-    public static void createServer() throws Exception {
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-
-        context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()), "/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()), "/query");
-
-        server.start();
+    public static void startServer() throws Exception {
+        Main.startServer();
     }
 
     private static String urlEncodeUTF8(String s) {
