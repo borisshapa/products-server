@@ -41,12 +41,8 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        pathToServlet.forEach((String path, AbstractServlet servlet) -> addServlet(context, servlet, path));
+        pathToServlet.forEach((String path, AbstractServlet servlet) -> context.addServlet(new ServletHolder(servlet), path));
         server.start();
         server.join();
-    }
-    
-    private static void addServlet(ServletContextHandler context, AbstractServlet servlet, String path) {
-        context.addServlet(new ServletHolder(servlet), path);
     }
 }
