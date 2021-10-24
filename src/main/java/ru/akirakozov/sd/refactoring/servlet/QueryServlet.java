@@ -4,38 +4,34 @@ import ru.akirakozov.sd.refactoring.data.ProductDataAccess;
 import ru.akirakozov.sd.refactoring.html.HtmlBuilder;
 import ru.akirakozov.sd.refactoring.model.Product;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 /**
  * @author akirakozov
  */
-public class QueryServlet extends HttpServlet {
-    private static void writeOptionalProductWithHeader(String header, HttpServletResponse response, Optional<Product> product) throws IOException {
-        response.getWriter().println(HtmlBuilder.contentWithHeader(
+public class QueryServlet extends AbstractServlet {
+    private static String writeOptionalProductWithHeader(String header, Optional<Product> product) {
+        return HtmlBuilder.contentWithHeader(
                 header,
                 product.isPresent() ? HtmlBuilder.product(product.get()) : ""
-        ));
+        );
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, PrintWriter printWriter) {
         String command = request.getParameter("command");
-
+        String response;
         switch (command) {
-            case "max" -> writeOptionalProductWithHeader("Product with max price: ", response, ProductDataAccess.getProductWithMaxPrice());
-            case "min" -> writeOptionalProductWithHeader("Product with min price: ", response, ProductDataAccess.getProductWithMinPrice());
-            case "sum" -> response.getWriter().println(HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum()));
-            case "count" -> response.getWriter().println(HtmlBuilder.contentPage("Number of products: \n" + ProductDataAccess.getProductsCount()));
-            default -> response.getWriter().println("Unknown command: " + command);
+            case "max" -> response = writeOptionalProductWithHeader("Product with max price: ", ProductDataAccess.getProductWithMaxPrice());
+            case "min" -> response = writeOptionalProductWithHeader("Product with min price: ", ProductDataAccess.getProductWithMinPrice());
+            case "sum" -> response = HtmlBuilder.contentPage("Summary price: \n" + ProductDataAccess.getPriceSum());
+            case "count" -> response = HtmlBuilder.contentPage("Number of products: \n" + ProductDataAccess.getProductsCount());
+            default -> response = "Unknown command: " + command;
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        printWriter.println(response);
     }
-
 }
