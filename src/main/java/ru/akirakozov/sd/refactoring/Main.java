@@ -3,6 +3,8 @@ package ru.akirakozov.sd.refactoring;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import ru.akirakozov.sd.refactoring.data.ProductDataAccess;
+import ru.akirakozov.sd.refactoring.servlet.AbstractServlet;
 import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
@@ -10,6 +12,7 @@ import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.Map;
 
 import static ru.akirakozov.sd.refactoring.config.Config.DB_URL;
 import static ru.akirakozov.sd.refactoring.config.Config.PORT;
@@ -18,17 +21,19 @@ import static ru.akirakozov.sd.refactoring.config.Config.PORT;
  * @author akirakozov
  */
 public class Main {
-    public static void main(String[] args) throws Exception {
-        try (Connection c = DriverManager.getConnection(DB_URL)) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-            Statement stmt = c.createStatement();
+    private static final Map<String, AbstractServlet> pathToServlet = Map.of(
+        "/add-product", new AddProductServlet(),
+        "/get-products", new GetProductsServlet(),
+        "/query", new QueryServlet()
+    );
 
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
+    public static void main(String[] args) throws Exception {
+        ProductDataAccess.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS PRODUCT" +
+                        "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        " NAME           TEXT    NOT NULL, " +
+                        " PRICE          INT     NOT NULL)"
+        );
 
         Server server = new Server(PORT);
 
@@ -36,11 +41,12 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()),"/query");
-
+        pathToServlet.forEach((String path, AbstractServlet servlet) -> addServlet(context, servlet, path));
         server.start();
         server.join();
+    }
+    
+    private static void addServlet(ServletContextHandler context, AbstractServlet servlet, String path) {
+        context.addServlet(new ServletHolder(servlet), path);
     }
 }

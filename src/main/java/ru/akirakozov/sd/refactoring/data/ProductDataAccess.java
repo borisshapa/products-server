@@ -12,7 +12,7 @@ import static ru.akirakozov.sd.refactoring.config.Config.DB_URL;
 public class ProductDataAccess {
     private static final String CONNECTION_ERROR_PREFIX = "Сould not establish a connection to the database: ";
 
-    private static boolean executeUpdate(String sqlQuery) {
+    public static boolean executeUpdate(String sqlQuery) {
         try (Connection c = DriverManager.getConnection(DB_URL)) {
             PreparedStatement stmt = c.prepareStatement(sqlQuery);
             boolean success = stmt.executeUpdate() > 0;

@@ -29,6 +29,7 @@ public class ProductsTest {
                         " NAME           TEXT    NOT NULL, " +
                         " PRICE          INT     NOT NULL)"
         );
+        executeSqlQuery("DELETE FROM PRODUCT");
     }
     
     @AfterEach
